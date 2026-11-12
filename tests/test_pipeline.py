@@ -8,7 +8,7 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from pipeline.common import parse_ar_date, parse_int  # noqa: E402
 from pipeline.ministry import tariff_month  # noqa: E402
-from pipeline.press import _numbers, _vote, extract_fuel, extract_tariff  # noqa: E402
+from pipeline.press import _numbers, _vote, extract_fuel, extract_tariff, extract_usd_rate  # noqa: E402
 from pipeline.validate import fuel_ok, tariff_ok  # noqa: E402
 
 FIX = os.path.join(os.path.dirname(__file__), "fixtures")
@@ -67,6 +67,17 @@ class NumberFormats(unittest.TestCase):
     def test_tariff_article(self):
         text = "حددت وزارة الطاقة تسعيرة الكيلوواط ساعة لشهر تشرين الأول بـ52,622 ليرة للمدن"
         self.assertEqual(extract_tariff(text), 52_622)
+
+
+class DollarRate(unittest.TestCase):
+    def test_real_phrasings(self):
+        # Sentences as printed by Almodon with the 10 Nov and 30 Oct 2026 tables.
+        self.assertEqual(extract_usd_rate("ومع احتساب سعر الدولار بـ89700 ليرة، أصبحت الأسعار"), 89_700)
+        self.assertEqual(extract_usd_rate("ولا يزال سعر صرف الدولار في المحطات ثابتاً عند 89700 ليرة."), 89_700)
+        self.assertEqual(extract_usd_rate("The dollar exchange rate at stations stays at LL89,700."), 89_700)
+
+    def test_ignores_other_numbers(self):
+        self.assertIsNone(extract_usd_rate("انخفض خام برنت إلى 90.63 دولاراً للبرميل"))
 
 
 class SafetyChecks(unittest.TestCase):

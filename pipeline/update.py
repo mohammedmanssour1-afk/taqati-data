@@ -46,6 +46,7 @@ class Store:
         self.fuel = {r["date"]: r for r in _load("fuel.json", {"rows": []})["rows"]}
         self.tariffs = {r["month"]: r for r in _load("tariffs.json", {"rows": []})["rows"]}
         self.review = _load("review.json", {"rows": []})["rows"]
+        self.rate = _load("rates.json", {})
         self.changes = []
 
     # Fuel ---------------------------------------------------------------
@@ -124,6 +125,15 @@ class Store:
         self.review.append(dict(row, kind=kind))
         self.changes.append(f"review: single-source {kind} {key[1]}")
 
+    def put_rate(self, value, as_of, source):
+        old = self.rate.get("usd_lbp")
+        new = {"usd_lbp": value, "as_of": as_of, "source": source,
+               "basis": "Dollar rate used in the Ministry of Energy and Water fuel price table"}
+        if old == value and self.rate.get("as_of", "") >= as_of:
+            return
+        self.rate = new
+        self.changes.append(f"dollar rate {value:,} LL as of {as_of} ({source})")
+
     def save(self):
         if not self.changes:
             print("No new data.")
@@ -134,6 +144,8 @@ class Store:
         _save("fuel.json", {"updated": now, "rows": fuel})
         _save("tariffs.json", {"updated": now, "rows": tariffs})
         _save("review.json", {"rows": self.review})
+        if self.rate:
+            _save("rates.json", self.rate)
         _save("meta.json", {"updated": now, "fuel_rows": len(fuel), "tariff_rows": len(tariffs),
                             "latest_fuel": fuel[-1]["date"] if fuel else None,
                             "latest_tariff": tariffs[-1]["month"] if tariffs else None})
@@ -184,6 +196,22 @@ def tariff_from_press(store, start, end):
             store.put_tariff(t, "press: " + ", ".join(t["sources"]))
         else:
             store.add_review("tariff", t)
+
+
+def update_rate(store, today):
+    """Re-read the fuel-table dollar rate when the stored one is more than 3 days old.
+    A changed rate needs two outlets agreeing; a confirmed unchanged rate needs one."""
+    as_of = store.rate.get("as_of", "0000")
+    if as_of >= (today - timedelta(days=3)).isoformat():
+        return
+    found = press.usd_rate_for_window(today - timedelta(days=PRESS_REACH_DAYS), today)
+    if not found:
+        return
+    value, when, sources, agreeing = found
+    if value != store.rate.get("usd_lbp") and agreeing < MIN_AGREEING and store.rate:
+        store.add_review("usd_rate", {"date": when.isoformat(), "usd_lbp": value, "sources": sources})
+        return
+    store.put_rate(value, when.isoformat(), "press: " + ", ".join(sources))
 
 
 def weeks(start, end):
@@ -239,6 +267,8 @@ def main():
             print(f"Tariff {last_month} missing; trying the press.")
             tariff_from_press(store, today.replace(day=1) - timedelta(days=12), today)
 
+    if not args.no_press:
+        update_rate(store, today)
     store.save()
 
 

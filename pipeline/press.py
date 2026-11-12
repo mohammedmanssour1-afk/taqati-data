@@ -110,6 +110,38 @@ def extract_tariff(text):
     return None
 
 
+# The dollar rate the ministry used for the fuel table, which outlets print with each table
+# ("ومع احتساب سعر الدولار بـ89700 ليرة", "سعر صرف الدولار في المحطات ... 89700").
+_USD = re.compile(r"(?:سعر\s*(?:صرف\s*)?الدولار|الدولار\s*(?:الأميركي\s*)?(?:في المحطات)?|dollar\s*(?:rate|exchange rate)|exchange rate)"
+                  r"[^\d\n]{0,60}?(\d{2}[,.\s]?\d{3})", re.I)
+USD_RANGE = (80_000, 100_000)
+
+
+def extract_usd_rate(text):
+    """The fuel-table dollar rate in LBP, or None."""
+    for m in _USD.finditer(latin_digits(text)):
+        v = int(re.sub(r"\D", "", m.group(1)))
+        if USD_RANGE[0] <= v <= USD_RANGE[1]:
+            return v
+    return None
+
+
+def usd_rate_for_window(start, end, max_articles=6):
+    """(rate, date, sources, agreeing) from the newest fuel articles in the window, or None."""
+    arts = sorted(find_articles(start, end, "fuel"), key=lambda a: a[0], reverse=True)[:max_articles]
+    readings, latest = [], None
+    for d, url, domain in arts:
+        html = fetch(url, timeout=30, retries=0)
+        v = extract_usd_rate(strip_html(html)) if html else None
+        if v:
+            readings.append((domain, v))
+            latest = latest or d
+    if not readings:
+        return None
+    v, n = _vote(readings)
+    return v, latest, sorted({d for d, x in readings if x == v}), n
+
+
 def _domain_ok(url):
     host = urllib.parse.urlparse(url).netloc.lower()
     return any(host == d or host.endswith("." + d) for d in TRUSTED)
