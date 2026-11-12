@@ -1,0 +1,161 @@
+{
+ "updated": "2026-11-12T22:20:39+00:00",
+ "rows": [
+  {
+   "month": "2024-09",
+   "urban": 30072,
+   "canister": null,
+   "source": "seed: L'Orient Today"
+  },
+  {
+   "month": "2024-10",
+   "urban": 29809,
+   "canister": null,
+   "source": "seed: L'Orient Today"
+  },
+  {
+   "month": "2024-11",
+   "urban": 29705,
+   "canister": null,
+   "source": "seed: L'Orient Today"
+  },
+  {
+   "month": "2024-12",
+   "urban": 29738,
+   "canister": null,
+   "source": "seed: L'Orient Today"
+  },
+  {
+   "month": "2025-01",
+   "urban": 30436,
+   "canister": 1409783,
+   "source": "seed: L'Orient Today"
+  },
+  {
+   "month": "2025-02",
+   "urban": 30884,
+   "canister": 1435109,
+   "source": "ministry"
+  },
+  {
+   "month": "2025-03",
+   "urban": 29974,
+   "canister": 1338852,
+   "source": "ministry"
+  },
+  {
+   "month": "2025-04",
+   "urban": 28591,
+   "canister": 1305617,
+   "source": "seed: L'Orient Today"
+  },
+  {
+   "month": "2025-05",
+   "urban": 27789,
+   "canister": 1260302,
+   "source": "ministry"
+  },
+  {
+   "month": "2025-06",
+   "urban": 31634,
+   "canister": 1477450,
+   "source": "ministry"
+  },
+  {
+   "month": "2025-07",
+   "urban": 32790,
+   "canister": 1542785,
+   "source": "seed: L'Orient Today"
+  },
+  {
+   "month": "2025-08",
+   "urban": 30309,
+   "canister": 1402624,
+   "source": "ministry"
+  },
+  {
+   "month": "2025-09",
+   "urban": 30267,
+   "canister": 1402624,
+   "source": "seed: L'Orient Today"
+  },
+  {
+   "month": "2025-10",
+   "urban": 30053,
+   "canister": 1388140,
+   "source": "seed: Ministry statement"
+  },
+  {
+   "month": "2025-11",
+   "urban": 31188,
+   "canister": 1452250,
+   "source": "seed: L'Orient Today"
+  },
+  {
+   "month": "2025-12",
+   "urban": 29975,
+   "canister": 1383753,
+   "source": "seed: L'Orient Today"
+  },
+  {
+   "month": "2026-01",
+   "urban": 28355,
+   "canister": 1292237,
+   "source": "seed: Ministry file"
+  },
+  {
+   "month": "2026-02",
+   "urban": 30244,
+   "canister": 1398957,
+   "source": "ministry"
+  },
+  {
+   "month": "2026-03",
+   "urban": 40580,
+   "canister": 1982753,
+   "source": "seed: L'Orient Today"
+  },
+  {
+   "month": "2026-04",
+   "urban": 49395,
+   "canister": 2480683,
+   "source": "seed: L'Orient Today"
+  },
+  {
+   "month": "2026-05",
+   "urban": 46289,
+   "canister": 2305205,
+   "source": "seed: L'Orient Today"
+  },
+  {
+   "month": "2026-06",
+   "urban": 41973,
+   "canister": 2061450,
+   "source": "ministry"
+  },
+  {
+   "month": "2026-07",
+   "urban": 40746,
+   "canister": 1992150,
+   "source": "seed: L'Orient Today, LBCI"
+  },
+  {
+   "month": "2026-08",
+   "urban": 48241,
+   "canister": 2415495,
+   "source": "seed: L'Orient Today, LBCI"
+  },
+  {
+   "month": "2026-09",
+   "urban": 52840,
+   "canister": 2675217,
+   "source": "seed: Ministry statement"
+  },
+  {
+   "month": "2026-10",
+   "urban": 52622,
+   "canister": 2662915,
+   "source": "seed: Ministry statement, 30 Oct 2026"
+  }
+ ]
+}
