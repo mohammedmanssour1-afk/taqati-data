@@ -9,6 +9,7 @@ Lebanese fuel prices and the monthly generator tariff, updated automatically for
 | `data/fuel.json` | Fuel tables: date, 95 and 98 octane, diesel (per 20 L), gas cylinder, in LBP |
 | `data/tariffs.json` | Generator tariff per month: urban price per kWh and the diesel canister average |
 | `data/rates.json` | Dollar rate (LBP per USD) used in the latest ministry fuel table |
+| `data/outlook.json` | Estimate for the next fuel table (up, down or unclear) with its past record. A call is made only when the table trend and NY Harbor wholesale prices (EIA, via FRED) agree. |
 | `data/meta.json` | Last update time and the latest dates |
 | `data/review.json` | Readings held back for a person to check (not used by the app) |
 

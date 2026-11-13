@@ -16,7 +16,7 @@ import json
 import os
 from datetime import date, datetime, timedelta, timezone
 
-from . import ministry, press
+from . import ministry, outlook, press
 from .validate import fuel_ok, in_range, tariff_ok
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -47,6 +47,7 @@ class Store:
         self.tariffs = {r["month"]: r for r in _load("tariffs.json", {"rows": []})["rows"]}
         self.review = _load("review.json", {"rows": []})["rows"]
         self.rate = _load("rates.json", {})
+        self.outlook = _load("outlook.json", {})
         self.changes = []
 
     # Fuel ---------------------------------------------------------------
@@ -146,6 +147,8 @@ class Store:
         _save("review.json", {"rows": self.review})
         if self.rate:
             _save("rates.json", self.rate)
+        if self.outlook:
+            _save("outlook.json", self.outlook)
         _save("meta.json", {"updated": now, "fuel_rows": len(fuel), "tariff_rows": len(tariffs),
                             "latest_fuel": fuel[-1]["date"] if fuel else None,
                             "latest_tariff": tariffs[-1]["month"] if tariffs else None})
@@ -228,6 +231,17 @@ def months_between(start, end):
         y, m = (y + 1, 1) if m == 12 else (y, m + 1)
 
 
+def update_outlook(store, today):
+    """Recompute the next-table estimate. Saved only when the call or its record changes."""
+    new = outlook.update(list(store.fuel.values()), today)
+    if not new:
+        print("  outlook: wholesale prices unavailable; keeping the previous estimate")
+        return
+    if new != store.outlook:
+        store.outlook = new
+        store.changes.append(f"outlook after {new['after_table']}: 95 {new['g95']['call']}, diesel {new['diesel']['call']}")
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--backfill", help="walk back to this date (YYYY-MM-DD) and fill gaps")
@@ -269,6 +283,7 @@ def main():
 
     if not args.no_press:
         update_rate(store, today)
+    update_outlook(store, today)
     store.save()
 
 

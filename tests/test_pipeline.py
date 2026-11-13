@@ -130,3 +130,31 @@ class Voting(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class Outlook(unittest.TestCase):
+    def test_call_needs_both_signals_to_agree(self):
+        from pipeline.outlook import call
+        self.assertEqual(call(12_000, 2.5), "up")
+        self.assertEqual(call(-9_000, -0.4), "down")
+        self.assertEqual(call(12_000, -1.0), "unclear")
+        self.assertEqual(call(0, 3.0), "unclear")
+        self.assertEqual(call(5_000, None), "unclear")
+
+    def test_parse_fred_skips_missing_days(self):
+        from pipeline.outlook import parse_fred
+        got = parse_fred("observation_date,DGASNYH\n2026-11-10,2.40\n2026-11-11,.\n2026-11-12,2.45\n", "DGASNYH")
+        self.assertEqual(got, {date(2026, 11, 10): 2.40, date(2026, 11, 12): 2.45})
+
+    def test_build_reads_latest_trend_and_prices(self):
+        from datetime import timedelta
+        from pipeline.outlook import build
+        rows = [{"date": "2026-11-03", "g95": 2_400_000, "diesel": 2_500_000},
+                {"date": "2026-11-06", "g95": 2_420_000, "diesel": 2_540_000},
+                {"date": "2026-11-10", "g95": 2_445_000, "diesel": 2_520_000}]
+        start = date(2026, 10, 20)
+        rising = {start + timedelta(days=i): 2.0 + i * 0.01 for i in range(30)}
+        out = build(rows, {"g95": rising, "diesel": rising}, date(2026, 11, 13))
+        self.assertEqual(out["after_table"], "2026-11-10")
+        self.assertEqual(out["g95"]["call"], "up")        # rising trend and rising prices
+        self.assertEqual(out["diesel"]["call"], "unclear")  # falling trend, rising prices
