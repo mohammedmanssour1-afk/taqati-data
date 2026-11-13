@@ -231,6 +231,17 @@ def months_between(start, end):
         y, m = (y + 1, 1) if m == 12 else (y, m + 1)
 
 
+RELEASE_WEEKDAYS = (1, 4)  # Tuesday, Friday (date.weekday(): Monday = 0)
+
+
+def last_release_day(today):
+    """The most recent Tuesday or Friday, today included."""
+    d = today
+    while d.weekday() not in RELEASE_WEEKDAYS:
+        d -= timedelta(days=1)
+    return d
+
+
 def update_outlook(store, today):
     """Recompute the next-table estimate. Saved only when the call or its record changes."""
     new = outlook.update(list(store.fuel.values()), today)
@@ -271,6 +282,9 @@ def main():
         ministry_ok = from_ministry(store, today - timedelta(days=45), today)
         latest = max(store.fuel) if store.fuel else "0000"
         stale = latest < (today - timedelta(days=5)).isoformat()
+        # A Tuesday or Friday has passed (or is today) with no table: the ministry site often
+        # posts hours or days after the press, so look there too.
+        stale = stale or latest < last_release_day(today).isoformat()
         recent = [k for k in store.fuel if k >= (today - timedelta(days=PRESS_REACH_DAYS)).isoformat()]
         gappy = len(recent) < PRESS_REACH_DAYS // 5  # tables come out about twice a week
         if not args.no_press and (not ministry_ok or stale or gappy):

@@ -1,6 +1,7 @@
 """Shared helpers: HTTP, digits, Arabic dates and number parsing."""
 import re
 import time
+import urllib.parse
 import urllib.request
 from datetime import date
 
@@ -30,6 +31,8 @@ def fetch(url, data=None, timeout=40, retries=2):
     body = data.encode() if isinstance(data, str) else data
     for attempt in range(retries + 1):
         try:
+            # Some outlets use Arabic letters in links; send them percent-encoded.
+            url = urllib.parse.quote(url, safe=":/?&=%#+,;@!$'()*[]~")
             req = urllib.request.Request(url, data=body, headers={"User-Agent": USER_AGENT})
             with urllib.request.urlopen(req, timeout=timeout) as r:
                 return r.read().decode("utf-8-sig", errors="replace")

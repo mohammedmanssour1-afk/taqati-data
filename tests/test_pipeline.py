@@ -158,3 +158,12 @@ class Outlook(unittest.TestCase):
         self.assertEqual(out["after_table"], "2026-11-10")
         self.assertEqual(out["g95"]["call"], "up")        # rising trend and rising prices
         self.assertEqual(out["diesel"]["call"], "unclear")  # falling trend, rising prices
+
+
+class ReleaseDays(unittest.TestCase):
+    def test_last_release_day(self):
+        from pipeline.update import last_release_day
+        self.assertEqual(last_release_day(date(2026, 11, 13)), date(2026, 11, 13))  # Friday itself
+        self.assertEqual(last_release_day(date(2026, 11, 15)), date(2026, 11, 13))  # Sunday
+        self.assertEqual(last_release_day(date(2026, 11, 17)), date(2026, 11, 17))  # Tuesday
+        self.assertEqual(last_release_day(date(2026, 11, 16)), date(2026, 11, 13))  # Monday
