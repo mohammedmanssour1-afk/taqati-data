@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-17T16:05:59+00:00",
+ "updated": "2026-11-18T00:59:01+00:00",
  "rows": [
   {
    "date": "2024-12-03",
@@ -985,7 +985,8 @@
    "g98": 2361000,
    "diesel": 2493000,
    "gas": 1636000,
-   "source": "press: almodon.com (single source, matches nearby tables)"
+   "source": "ministry",
+   "decision": "246"
   }
  ]
 }
