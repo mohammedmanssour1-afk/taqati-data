@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-25T19:20:32+00:00",
+ "updated": "2026-11-27T12:29:58+00:00",
  "rows": [
   {
    "date": "2024-12-03",
@@ -1001,6 +1001,14 @@
    "g95": 2242000,
    "g98": 2260000,
    "diesel": 2397000,
+   "gas": 1625000,
+   "source": "press: almodon.com (single source, matches nearby tables)"
+  },
+  {
+   "date": "2026-11-27",
+   "g95": 2158000,
+   "g98": 2176000,
+   "diesel": 2295000,
    "gas": 1625000,
    "source": "press: almodon.com (single source, matches nearby tables)"
   }

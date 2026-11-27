@@ -1,14 +1,14 @@
 {
- "after_table": "2026-11-24",
+ "after_table": "2026-11-27",
  "method": "trend + NY Harbor wholesale prices (EIA via FRED)",
  "g95": {
   "call": "down",
-  "right": 55,
-  "tested": 59
+  "right": 56,
+  "tested": 60
  },
  "diesel": {
   "call": "down",
-  "right": 51,
-  "tested": 56
+  "right": 52,
+  "tested": 57
  }
 }
